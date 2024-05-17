@@ -39,8 +39,8 @@ exports.deleteTask = (req, res) => {
     if (taskIndex === -1) {
         return res.status(404).json({ message: 'Task not found' });
     }
-    const deletedTask = tasks.splice(taskIndex, 1);
-    res.json(deletedTask);
+    tasks.splice(taskIndex, 1);
+    res.json(tasks);
 };
 
 exports.deleteAlllTasks = (req, res) => {

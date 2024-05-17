@@ -8,7 +8,10 @@ export function TasksProvider({ children }) {
   const [description, setDescription] = useState('');
   const [descriptionEdit, setDescriptionEdit] = useState('');
   const [categoryEdit, setCategoryEdit] = useState('');
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState({
+    label: 'Engineering',
+    value: 'Engineering',
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState({});

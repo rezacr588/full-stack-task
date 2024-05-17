@@ -27,8 +27,24 @@ const App = () => {
     categoryEdit
   } = useTasksContext();
 
-  const getTasksByStatus = (status) => tasks.filter(task => task.status === status);
-
+  const getTasksByStatus = (status) => {
+    const tasksByStatus = tasks.filter(task => task.status === status);
+    const { trueTasks, falseTasks } = tasksByStatus.reduce(
+      (acc, task) => {
+        acc[task.state ? 'trueTasks' : 'falseTasks'].push(task);
+        return acc;
+      },
+      { trueTasks: [], falseTasks: [] }
+    );
+  
+    // Order tasks in both groups based on your desired criteria.
+    // For example, to order them by creation time:
+    trueTasks.sort((a, b) => a.creationTime - b.creationTime);
+    falseTasks.sort((a, b) => a.creationTime - b.creationTime);
+  
+    return falseTasks.concat(trueTasks);
+  };
+  
   const options = [
     { value: 'Web Design', label: 'Web Design' },
     { value: 'Engineering', label: 'Engineering' },
@@ -71,11 +87,10 @@ const App = () => {
       </div>
       <DragDropContext onDragEnd={onDragEnd}>
         <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
           gap: 14,
           borderRadius: 12,
         }}
+          className="grid grid-cols-1 md:grid-cols-3"
         >
           <Droppable key={"To Do"} droppableId={["To Do"]}>
               {(provided) => (
@@ -125,7 +140,7 @@ const App = () => {
             color: "rgba(79, 79, 79, 1)"
           }}>Category</h2>
           <Dropdown options={options} onSelect={handleSelect} selected={
-            'Select a category'
+            'Engineering'
           } />
         </div>
         <textarea placeholder='Description . . .' value={description} onChange={(e) => {
