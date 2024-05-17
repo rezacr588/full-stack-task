@@ -1,19 +1,19 @@
-let tasks = []; // This is your in-memory data storage
-
+let tasks = []; 
 exports.createTask = (req, res) => {
     const task = {
-        id: tasks.length + 1, // simple way to generate unique id
-        text: req.body.text,
+        id: req.body.id,
+        text: req.body.description,
         category: req.body.category,
-        status: req.body.status
+        status: req.body.status,
+        createdAt: req.body.createdAt,
+        state: false
     };
     tasks.push(task);
-    res.status(201).json(task);
+    res.status(201).json(tasks);
 };
 
 exports.editTask = (req, res) => {
-    const id = parseInt(req.params.id);
-    const taskIndex = tasks.findIndex(task => task.id === id);
+    const taskIndex = tasks.findIndex(task => task.id === req.params.id);
     if (taskIndex === -1) {
         return res.status(404).json({ message: 'Task not found' });
     }
@@ -22,9 +22,20 @@ exports.editTask = (req, res) => {
     res.json(updatedTask);
 };
 
+exports.updateTask = (req, res) => {
+    const taskIndex = tasks.findIndex(task => task.id === req.params.id);
+    if (taskIndex === -1) {
+        return res.status(404).json({ message: 'Task not found' });
+    }
+    const updatedTask = { ...tasks[taskIndex], ...req.body };
+
+    tasks[taskIndex] = updatedTask;
+
+    res.json(tasks);
+}
+
 exports.deleteTask = (req, res) => {
-    const id = parseInt(req.params.id);
-    const taskIndex = tasks.findIndex(task => task.id === id);
+    const taskIndex = tasks.findIndex(task => task.id === req.params.id);
     if (taskIndex === -1) {
         return res.status(404).json({ message: 'Task not found' });
     }
@@ -32,10 +43,17 @@ exports.deleteTask = (req, res) => {
     res.json(deletedTask);
 };
 
-exports.listTasks = (req, res) => {
-    if (req.query.category) {
-        const filteredTasks = tasks.filter(task => task.category === req.query.category);
-        return res.json(filteredTasks);
-    }
+exports.deleteAlllTasks = (req, res) => {
+    tasks = [];
     res.json(tasks);
 };
+
+exports.listTasks = (req, res) => { 
+    const searchQuery = req.query.search;
+    if (searchQuery) {
+        const filteredTasks = tasks.filter(task => task.text.includes(searchQuery) || task.category.includes(searchQuery));
+        res.json(filteredTasks);
+    } else {
+        res.json(tasks);
+    }
+}
