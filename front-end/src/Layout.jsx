@@ -1,114 +1,167 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTasksContext } from './context';
+import { SidebarIcon, SearchIcon, AddIcon } from './icons';
 
 const Layout = ({ children }) => {
-  const {deleteAllTasks, searchTask} = useTasksContext();
+  const { deleteAllTasks, searchTask } = useTasksContext();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const sidebarRef = useRef(null);
+
+  const toggleSidebar = (e) => {
+    e.stopPropagation();
+    setSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      setSidebarOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isSidebarOpen) {
+      document.addEventListener('click', handleClickOutside);
+    } else {
+      document.removeEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isSidebarOpen]);
+
   return (
     <div className="flex h-screen">
-      <aside className="hidden sm:block" style={{
-        borderRight: '1px solid #EFEFEF',
-        padding: '40px',
-        top: "50px",
-      }}>
-        <h4 style={{
-          fontSize: '25px',
-          lineHeight: '32.5px',
-          fontWeight: 500,
-          marginBottom: 80
-        }}>
+      <aside
+        ref={sidebarRef}
+        className={`fixed sm:relative transition-transform duration-300 ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full sm:translate-x-0'
+        }`}
+        style={{
+          borderRight: '1px solid #EFEFEF',
+          padding: '40px',
+          top: '0',
+          width: '250px',
+          height: '100%',
+          backgroundColor: 'white',
+          zIndex: 10,
+        }}
+      >
+        <h4
+          style={{
+            fontSize: '25px',
+            lineHeight: '32.5px',
+            fontWeight: 500,
+            marginBottom: 80,
+          }}
+        >
           Task Manager
         </h4>
-        <button style={{
-          height: 40,
-          background: '#2563DC',
-          padding: '8px 28px 8px 28px',
-          borderRadius: 8,
-          color: 'white',
-          display: 'flex',
-          width: 200,
-          gap: 12,
-        }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.03033 3.96967C8.32322 4.26256 8.32322 4.73744 8.03033 5.03033L5.53033 7.53033C5.23744 7.82322 4.76256 7.82322 4.46967 7.53033L2.96967 6.03033C2.67678 5.73744 2.67678 5.26256 2.96967 4.96967C3.26256 4.67678 3.73744 4.67678 4.03033 4.96967L5 5.93934L6.96967 3.96967C7.26256 3.67678 7.73744 3.67678 8.03033 3.96967Z" fill="white"/>
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.03033 9.96967C8.32322 10.2626 8.32322 10.7374 8.03033 11.0303L5.53033 13.5303C5.23744 13.8232 4.76256 13.8232 4.46967 13.5303L2.96967 12.0303C2.67678 11.7374 2.67678 11.2626 2.96967 10.9697C3.26256 10.6768 3.73744 10.6768 4.03033 10.9697L5 11.9393L6.96967 9.96967C7.26256 9.67678 7.73744 9.67678 8.03033 9.96967Z" fill="white"/>
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.03033 15.9697C8.32322 16.2626 8.32322 16.7374 8.03033 17.0303L5.53033 19.5303C5.23744 19.8232 4.76256 19.8232 4.46967 19.5303L2.96967 18.0303C2.67678 17.7374 2.67678 17.2626 2.96967 16.9697C3.26256 16.6768 3.73744 16.6768 4.03033 16.9697L5 17.9393L6.96967 15.9697C7.26256 15.6768 7.73744 15.6768 8.03033 15.9697Z" fill="white"/>
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M10.25 6C10.25 5.58579 10.5858 5.25 11 5.25H20C20.4142 5.25 20.75 5.58579 20.75 6C20.75 6.41421 20.4142 6.75 20 6.75H11C10.5858 6.75 10.25 6.41421 10.25 6Z" fill="white"/>
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M10.25 12C10.25 11.5858 10.5858 11.25 11 11.25H20C20.4142 11.25 20.75 11.5858 20.75 12C20.75 12.4142 20.4142 12.75 20 12.75H11C10.5858 12.75 10.25 12.4142 10.25 12Z" fill="white"/>
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M10.25 18C10.25 17.5858 10.5858 17.25 11 17.25H20C20.4142 17.25 20.75 17.5858 20.75 18C20.75 18.4142 20.4142 18.75 20 18.75H11C10.5858 18.75 10.25 18.4142 10.25 18Z" fill="white"/>
-          </svg>
+        <button
+          style={{
+            height: 40,
+            background: '#2563DC',
+            padding: '8px 28px',
+            borderRadius: 8,
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            width: '200px',
+            gap: 12,
+          }}
+        >
+          <AddIcon />
           Tasks
         </button>
-        <button style={{
+        <button
+          style={{
             height: 40,
             background: '#FDF0EC',
-            padding: '8px 28px 8px 28px',
+            padding: '8px 28px',
             borderRadius: 8,
             color: '#81290E',
             display: 'flex',
-            position: 'fixed',
+            alignItems: 'center',
             gap: 12,
             fontSize: 16,
             fontWeight: 500,
-            width: 200,
-            bottom: 40,
+            width: '200px',
+            position: 'absolute',
+            bottom: '40px',
           }}
           onClick={deleteAllTasks}
         >
-
           Delete All Tasks
         </button>
       </aside>
       <div className="flex-1">
-        <header style={{
-          borderBottom: "1px solid #EFEFEF",
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "20px 40px",
-        }} className="text-gray-800">
-          <div style={{ position: 'relative', width: '80%' }}>
-            <input type="text" placeholder="Filter Tasks" style={{
-              background: '#white',
-              border: '1px solid #EFEFEF',
-              padding: '8px 16px',
-              borderRadius: 8,
-              width: "100%",
-              paddingRight: '40px'
+        <header
+          style={{
+            borderBottom: '1px solid #EFEFEF',
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '20px 40px',
+          }}
+          className="text-gray-800"
+        >
+          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+            <button
+              onClick={toggleSidebar}
+              className="sm:hidden"
+              style={{
+                background: 'none',
+                border: 'none',
+                marginRight: '16px',
+                cursor: 'pointer',
               }}
+            >
+              <SidebarIcon />
+            </button>
+            <div style={{ position: 'relative', width: '80%' }}>
+              <input
+                type="text"
+                placeholder="Filter Tasks"
+                style={{
+                  background: 'white',
+                  border: '1px solid #EFEFEF',
+                  padding: '8px 16px',
+                  borderRadius: 8,
+                  width: '100%',
+                  paddingRight: '40px',
+                }}
                 onChange={(e) => {
                   const value = e.target.value;
                   searchTask(value);
-                } 
-              }
+                }}
               />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{
-                position: 'absolute',
-                right: '16px', 
-                top: '50%',
-                transform: 'translateY(-50%)',
-                width: '20px',
-                height: '20px',
-                pointerEvents: 'none'
-              }}
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
+              <SearchIcon
+                style={{
+                  position: 'absolute',
+                  right: '16px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '20px',
+                  height: '20px',
+                  pointerEvents: 'none',
+                }}
+              />
+            </div>
           </div>
-          <img src="https://cdn.pixabay.com/photo/2016/05/05/02/37/sunset-1373171_1280.jpg" style={{width: 44, height: 44, borderRadius: "50%"}} />
+          <img
+            src="https://cdn.pixabay.com/photo/2016/05/05/02/37/sunset-1373171_1280.jpg"
+            style={{ width: '44px', height: '44px', borderRadius: '50%' }}
+          />
         </header>
-        <main style={{
+        <main
+          style={{
             padding: '20px 40px',
-          }}>{children}</main>
+          }}
+        >
+          {children}
+        </main>
       </div>
     </div>
-)};
+  );
+};
 
 export default Layout;

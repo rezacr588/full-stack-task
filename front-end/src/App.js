@@ -75,7 +75,8 @@ const App = () => {
           gridTemplateColumns: "1fr 1fr 1fr",
           gap: 14,
           borderRadius: 12,
-        }}>
+        }}
+        >
           <Droppable key={"To Do"} droppableId={["To Do"]}>
               {(provided) => (
                 <div
