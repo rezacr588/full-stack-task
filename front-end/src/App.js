@@ -1,11 +1,11 @@
 import React from 'react';
-import Layout from './Layout';
+import Layout from './Components/Layout';
 import './App.css';
-import TaskStack from './TaskStack';
+import TaskStack from './Components/TaskStack';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import Modal from './Modal';
-import Dropdown from './Dropdown';
-import { useTasksContext } from './context';
+import Modal from './Components/Modal';
+import Dropdown from './Components/Dropdown';
+import { useTasksContext } from './Context/context';
 
 const App = () => {
   const {

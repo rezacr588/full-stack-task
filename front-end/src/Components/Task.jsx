@@ -1,5 +1,5 @@
-import { useTasksContext } from "./context";
-import { done, unDone } from "./icons";
+import { useTasksContext } from "../Context/context";
+import { done, unDone } from "../Assets/icons";
 
 const Task = (props) => {
   const { text, state, createdAt, category } = props; 

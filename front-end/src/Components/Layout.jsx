@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useTasksContext } from './context';
-import { SidebarIcon, SearchIcon, AddIcon } from './icons';
+import { useTasksContext } from '../Context/context';
+import { SidebarIcon, SearchIcon, AddIcon } from '../Assets/icons';
 
 const Layout = ({ children }) => {
   const { deleteAllTasks, searchTask } = useTasksContext();
