@@ -79,7 +79,12 @@ export function TasksProvider({ children }) {
       .then(data => setTasks(data))
       .then(() => {
         setDescription('');
-        setSelectedOption(null);
+        setSelectedOption(
+          {
+            label: 'Engineering',
+            value: 'Engineering',
+          }
+        );
         closeModal();
       });
   };
